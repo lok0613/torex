@@ -70,6 +70,12 @@ defmodule Torex do
     end
   end
 
-  defp get_config(), do: Application.get_env(:torex, :tor_server)
+  defp get_config() do
+    config = Application.get_env(:torex, :tor_server)
+    [
+      ip: String.to_charlist(config[:ip]),
+      port: config[:port]
+    ]
+  end
 
 end
