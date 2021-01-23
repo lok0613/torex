@@ -3,8 +3,6 @@ defmodule Torex do
   alias Torex.HTTPClient
   require Logger
 
-  @tor_server Application.get_env(:torex, :tor_server)
-
   @moduledoc """
   Launches hackney pool with Tor proxy
   Acccording to docs should be working, but cannot assure it is
@@ -36,7 +34,7 @@ defmodule Torex do
     case HTTPClient.request(method, url, body, headers,
            hackney:
              [:insecure] ++
-               [pool: :torex_pool, proxy: {:socks5, @tor_server[:ip], @tor_server[:port]}]
+               [pool: :torex_pool, proxy: {:socks5, get_config()[:ip], get_config()[:port]}]
          ) do
       {:ok, %{status_code: 200, body: body}} ->
         {:ok, body}
@@ -53,4 +51,7 @@ defmodule Torex do
         {:error, error}
     end
   end
+
+  defp get_config(), do: Application.get_env(:torex, :tor_server)
+
 end
