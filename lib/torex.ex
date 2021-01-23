@@ -22,12 +22,30 @@ defmodule Torex do
     Supervisor.start_link(children, opts)
   end
 
+  @spec get(String.t()) :: {:ok, String.t()} | {:error, :wrong_status_code, integer(), String.t()} | {:error, Map.t()}
   def get(url) do
     request(:get, url)
   end
 
-  def post(url, params) do
+  @spec get!(String.t()) :: String.t()
+  def get!(url) do
+    case get(url) do
+      {:ok, body} -> body
+      whatever -> raise "Torex http get request failure - #{inspect(whatever)}"
+    end
+  end
+
+  @spec post(String.t(), List.t()) :: {:ok, String.t()} | {:error, :wrong_status_code, integer(), String.t()} | {:error, Map.t()}
+  def post(url, params) when is_list(params) do
     request(:post, url, Poison.encode!(params))
+  end
+
+  @spec post!(String.t(), List.t()) :: String.t()
+  def post!(url, params) when is_list(params) do
+    case post(url, params) do
+      {:ok, body} -> body
+      _ -> raise "Torex http get request failure."
+    end
   end
 
   defp request(method, url, body \\ [], headers \\ []) when method == :get or method == :post do
