@@ -17,7 +17,7 @@ When Tor is up and running add to your app config the following
 ```elixir
 config :torex,
   :tor_server,
-    ip: '127.0.0.1', # note charlist here, not binary
+    ip: "127.0.0.1"
     port: 9050
 ```
 
@@ -26,6 +26,13 @@ Make requests:
 ```elixir
 {:ok, contents} = Torex.get(url)
 {:ok, result}   = Torex.post(url, params)
+```
+
+or
+
+```elixir
+contents = Torex.get!(url)
+result   = Torex.post!(url, params)
 ```
 
 ## Installation
